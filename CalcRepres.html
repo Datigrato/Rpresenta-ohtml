@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Calcula Representação</title>
+
+    <link rel="stylesheet" href="Style1.css">
+
+    <style>
+
+    </style>
+</head>
+
+<body>
+
+    <h2>Calculadora de Representação</h2>
+
+    <label for="posto">Selecione o posto ou graduação:</label>
+    <select id="posto" onchange="atualizarSoldo()">
+        <option value="">-- Selecione --</option>
+        <option value="soldado">Soldado</option>
+        <option value="cabo">Cabo</option>
+        <option value="3sargento">3º Sargento</option>
+        <option value="2sargento">2º Sargento</option>
+        <option value="1sargento">1º Sargento</option>
+        <option value="subtenente">Subtenente</option>
+        <option value="aspirante">Aspirante</option>
+        <option value="2tenente">2º Tenente</option>
+        <option value="1tenente">1º Tenente</option>
+        <option value="capitao">Capitão</option>
+        <option value="major">Major</option>
+        <option value="tenentecoronel">Tenente-Coronel</option>
+        <option value="coronel">Coronel</option>
+        <option value="generalbrigada">General de Brigada</option>
+        <option value="generaldivisao">General de Divisão</option>
+        <option value="generalexercito">General de Exército</option>
+    </select>
+
+    <p><strong>Soldo:</strong> R$ <span id="soldo">0,00</span></p>
+
+    <p><strong>2% do soldo:</strong> R$ <span id="percentual">0,00</span></p>
+
+    <!-- Entrada para a diferença de dias e horas -->
+    <label for="dataInicio">Data e hora inicial:</label>
+    <input type="datetime-local" id="dataInicio">
+
+    <label for="dataFim">Data e hora final:</label>
+    <input type="datetime-local" id="dataFim">
+
+    <button onclick="calcular()">Calcular</button>
+
+    <div id="resultado"></div>
+
+    <script src="scripts.js"></script>
+
+</body>
+
+</html>

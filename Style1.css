@@ -1,0 +1,52 @@
+/* style.css */
+
+body {
+    font-family: Arial, sans-serif;
+    margin: 2rem;
+    background-color: #21be63;
+}
+
+h2 {
+    color: #333;
+}
+
+label {
+    display: block;
+    margin-top: 1rem;
+    font-weight: bold;
+    font-size: 18px;
+}
+
+input {
+    padding: 0.4rem;
+    margin-bottom: 0.5rem;
+    width: 250px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+button {
+    margin-top: 1rem;
+    padding: 0.6rem 1.2rem;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #0056b3;
+}
+
+#resultado {
+    margin-top: 1rem;
+    font-weight: bold;
+    color: #444;
+}
+
+select {
+    font-size: 18px;
+    padding: 6px 12px;
+    border-radius: 5px;
+}
