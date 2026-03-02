@@ -1,52 +1,593 @@
-/* style.css */
+/* ==========================================================================
+   Style1.css (ÚNICO para HOME + PÁGINA DE CÁLCULO)
+   - HOME: .layout / .sidebar / .conteudo
+   - CÁLCULO: .topo / .card / .grid-* / .acoes / .resultado-box
+   Comentários indicam os campos/elementos afetados.
+   ========================================================================== */
+
+
+/* =========================
+   BASE / RESET (ambas páginas)
+   Afeta: página inteira
+   ========================= */
+
+* {
+    box-sizing: border-box;
+}
 
 body {
+    margin: 0;
+    background-color: #556b2f;
     font-family: Arial, sans-serif;
-    margin: 2rem;
-    background-color: #21be63;
 }
 
-h2 {
-    color: #333;
+
+/* =========================
+      CONTAINER PRINCIPAL (ambas páginas)
+      Afeta:
+      - HOME: <div class="container"> (envolve título + layout)
+      - CÁLCULO: <div class="container"> (envolve o formulário todo)
+      ========================= */
+
+.container {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 16px;
 }
 
-label {
+
+/* ==========================================================================
+   HOME (Página principal) - CSS compatível com o HTML enviado
+   Afeta: .titulo-home / .layout / .sidebar / .conteudo / .painel-home / cards
+   ========================================================================== */
+
+
+/* Afeta: <h1 class="titulo-home">Representação Online</h1> */
+
+.titulo-home {
+    margin: 0 0 14px 0;
+    text-align: center;
+    font-size: 60px;
+    font-weight: 800;
+    color: #fff;
+    letter-spacing: 0.5px;
+}
+
+
+/* Afeta: <div class="layout"> (wrapper de sidebar + conteudo) */
+
+.layout {
+    display: flex;
+    width: 100%;
+}
+
+
+/* Afeta: <aside class="sidebar"> (menu fixo na esquerda) */
+
+.sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 240px;
+    height: 100vh;
+    background: #2f3b1d;
+    color: #fff;
+    padding: 18px 12px;
+    box-shadow: 2px 0 10px rgba(0, 0, 0, 0.28);
+    overflow-y: auto;
+    border-radius: 0;
+}
+
+
+/* Afeta: <h2 class="logo">Menu</h2> */
+
+.logo {
+    margin: 0 0 14px 0;
+    text-align: center;
+    font-size: 22px;
+    font-weight: 900;
+    letter-spacing: 0.5px;
+}
+
+
+/* Afeta: <nav class="nav"> */
+
+.nav {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+
+/* Afeta: link "Cálculo" */
+
+.nav>a {
+    color: #fff;
+    text-decoration: none;
+    padding: 10px 12px;
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.08);
+    transition: background 0.18s ease, transform 0.12s ease;
+}
+
+.nav>a:hover {
+    background: rgba(255, 255, 255, 0.16);
+    transform: translateY(-1px);
+}
+
+
+/* Afeta: <details class="menu-drop"> */
+
+.menu-drop {
+    padding-top: 10px;
+    border-top: 1px solid rgba(255, 255, 255, 0.18);
+}
+
+
+/* Afeta: <summary class="menu-drop-titulo">Legislação</summary> */
+
+.menu-drop-titulo {
+    list-style: none;
+    cursor: pointer;
+    padding: 10px 12px;
+    border-radius: 10px;
+    font-weight: 900;
+    background: rgba(255, 255, 255, 0.08);
+    user-select: none;
+    transition: background 0.18s ease;
+}
+
+.menu-drop-titulo:hover {
+    background: rgba(255, 255, 255, 0.16);
+}
+
+.menu-drop summary::-webkit-details-marker {
+    display: none;
+}
+
+.menu-drop-titulo::after {
+    content: "▸";
+    float: right;
+    transition: transform 0.2s ease;
+    opacity: 0.95;
+}
+
+.menu-drop[open] .menu-drop-titulo::after {
+    transform: rotate(90deg);
+}
+
+
+/* Afeta: links internos (PDFs) */
+
+.sub-link {
     display: block;
-    margin-top: 1rem;
-    font-weight: bold;
+    margin: 8px 0 0 10px;
+    padding: 9px 12px;
+    border-radius: 10px;
+    color: #fff;
+    text-decoration: none;
+    background: rgba(255, 255, 255, 0.06);
+    transition: background 0.18s ease, transform 0.12s ease;
+    font-size: 14px;
+}
+
+.sub-link:hover {
+    background: rgba(255, 255, 255, 0.14);
+    transform: translateY(-1px);
+}
+
+
+/* Afeta: <main class="conteudo"> (CAIXA CENTRAL)
+     IMPORTANTE: abre espaço para a sidebar fixed */
+
+.conteudo {
+    margin-left: 240px;
+    /* espaço pro menu */
+    width: calc(100% - 240px);
+    /* ocupa o resto */
+    min-height: 100vh;
+    padding: 18px;
+}
+
+
+/* Afeta: <div class="painel-home"> (painel interno do main) */
+
+.painel-home {
+    max-width: 900px;
+    margin: 0 auto;
+    background: rgba(255, 255, 255, 0.10);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    border-radius: 14px;
+    padding: 20px;
+}
+
+
+/* Afeta: <h2> e <p> dentro do painel */
+
+.painel-home h2 {
+    margin: 0 0 10px 0;
+    color: #fff;
+    font-size: 22px;
+    font-weight: 900;
+}
+
+.painel-home p {
+    margin: 0;
+    color: #f0f0f0;
+    opacity: 0.92;
+    line-height: 1.6;
+}
+
+
+/* Afeta: <div class="cards-home"> (grade dos atalhos) */
+
+.cards-home {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-top: 14px;
+}
+
+
+/* Afeta: <div class="card-home"> (cada cartão) */
+
+.card-home {
+    background: rgba(255, 255, 255, 0.10);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    border-radius: 14px;
+    padding: 16px;
+}
+
+.card-home h3 {
+    margin: 0 0 8px 0;
+    color: #fff;
+    font-size: 16px;
+    font-weight: 900;
+}
+
+.card-home small {
+    display: block;
+    color: #f0f0f0;
+    opacity: 0.9;
+    line-height: 1.5;
+}
+
+
+/* =========================
+     RESPONSIVO (HOME)
+     ========================= */
+
+@media (max-width: 900px) {
+    .titulo-home {
+        font-size: 44px;
+    }
+    .sidebar {
+        width: 210px;
+    }
+    .conteudo {
+        margin-left: 210px;
+        width: calc(100% - 210px);
+    }
+}
+
+@media (max-width: 800px) {
+    /* Menu vira topo */
+    .sidebar {
+        position: relative;
+        width: 100%;
+        height: auto;
+    }
+    .conteudo {
+        margin-left: 0;
+        width: 100%;
+        min-height: auto;
+    }
+    .cards-home {
+        grid-template-columns: 1fr;
+    }
+}
+
+
+/* ==========================================================================
+      PÁGINA DE CÁLCULO (FORMULÁRIO)
+      Aparece no CalcRepres2.html (tem .topo/.card/.grid-*)
+      ========================================================================== */
+
+
+/* =========================
+      TOPO DO FORM
+      Afeta:
+      - <header class="topo">
+        - <h1>Calcula Representação</h1>
+        - <p class="sub">...
+      ========================= */
+
+.topo h1 {
+    margin: 0;
+    color: #fff;
+    text-align: center;
+    font-size: 40px;
+    font-weight: 800;
+    letter-spacing: 0.5px;
+}
+
+
+/* OBS: .sub também é usada na HOME se você colocar.
+      Aqui garante centralização e cor. */
+
+.sub {
+    margin: 8px 0 0 0;
+    text-align: center;
+    color: #f0f0f0;
+    opacity: 0.9;
+}
+
+
+/* =========================
+      CARDS
+      Afeta: <section class="card"> (todos)
+      - Identificação
+      - Referência (BI)
+      - Motivo e Período
+      - Valores
+      ========================= */
+
+.card {
+    border: 1px solid #2f3b1d;
+    background: #f4f4f0;
+    border-radius: 12px;
+    padding: 16px;
+    margin-top: 14px;
+}
+
+
+/* Afeta: <h2 class="card-title"> */
+
+.card-title {
+    margin: 0 0 12px 0;
     font-size: 18px;
+    color: #1f2a12;
 }
 
-input {
-    padding: 0.4rem;
-    margin-bottom: 0.5rem;
-    width: 250px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
+
+/* =========================
+      GRIDS
+      Afeta:
+      - .grid-1 -> #NomeComp, #Motivo
+      - .grid-2 -> #OM + #posto, #numeroBIIda + #dataBIIda,
+                   #numeroBIRet + #dataBIRet, #dataInicio + #dataFim
+      ========================= */
+
+.grid-1 {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 12px;
 }
 
-button {
-    margin-top: 1rem;
-    padding: 0.6rem 1.2rem;
-    background-color: #007bff;
-    color: white;
-    border: none;
-    border-radius: 4px;
+.grid-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+}
+
+
+/* =========================
+      CAMPOS (LABEL/INPUT/SELECT)
+      Afeta diretamente:
+      - #NomeComp
+      - #OM
+      - #posto
+      - #numeroBIIda
+      - #dataBIIda
+      - #numeroBIRet
+      - #dataBIRet
+      - #Motivo
+      - #dataInicio
+      - #dataFim
+      ========================= */
+
+.campo label {
+    display: block;
+    margin-bottom: 6px;
+    font-weight: 700;
+    color: #1f2a12;
+}
+
+.campo input,
+.campo select {
+    width: 100%;
+    padding: 10px;
+    border-radius: 10px;
+    border: 1px solid #b6b6b6;
+    background: #fff;
+    outline: none;
+    font-size: 14px;
+}
+
+
+/* foco nos campos (quando clica) */
+
+.campo input:focus,
+.campo select:focus {
+    border-color: #556b2f;
+    box-shadow: 0 0 0 3px rgba(85, 107, 47, 0.25);
+}
+
+
+/* Inputs de data/datetime
+      Afeta: #dataBIIda, #dataBIRet, #dataInicio, #dataFim
+   */
+
+.campo input[type="date"],
+.campo input[type="datetime-local"] {
+    height: 42px;
+    appearance: auto;
+    -webkit-appearance: auto;
+    -moz-appearance: auto;
+}
+
+.campo input[type="date"]::-webkit-calendar-picker-indicator,
+.campo input[type="datetime-local"]::-webkit-calendar-picker-indicator {
+    opacity: 1;
     cursor: pointer;
 }
 
-button:hover {
-    background-color: #0056b3;
+
+/* =========================
+      BADGES (VALORES)
+      Afeta:
+      - <div class="badges">
+      - <div class="badge"> (Soldo / 2% do soldo)
+      Conteúdo:
+      - #soldo
+      - #percentual
+      ========================= */
+
+.badges {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+}
+
+.badge {
+    border: 1px solid #cfcfcf;
+    border-radius: 12px;
+    padding: 12px;
+    background: #fff;
+}
+
+.badge span {
+    display: block;
+    opacity: .85;
+    font-size: 13px;
+}
+
+.badge strong {
+    font-size: 18px;
+}
+
+
+/* =========================
+      AÇÕES (BOTÕES)
+      Afeta:
+      - <section class="acoes">
+      - Botões:
+        - .btn-calcular (Calcular)
+        - .btn-pdf (Exportar PDF)
+      ========================= */
+
+.acoes {
+    display: flex;
+    gap: 10px;
+    margin-top: 14px;
+}
+
+.acoes button {
+    padding: 12px 18px;
+    border: none;
+    border-radius: 10px;
+    font-weight: 800;
+    cursor: pointer;
+    transition: transform .15s ease, filter .15s ease, box-shadow .15s ease;
+    font-size: 15px;
+}
+
+.acoes button:hover {
+    transform: translateY(-2px);
+    filter: brightness(1.05);
+}
+
+.acoes button:active {
+    transform: translateY(0);
+    filter: brightness(.98);
+}
+
+.btn-calcular {
+    background-color: #2e7d32;
+    color: #fff;
+    box-shadow: 0 3px 8px rgba(0, 0, 0, .25);
+}
+
+.btn-pdf {
+    background-color: #b71c1c;
+    color: #fff;
+    box-shadow: 0 3px 8px rgba(0, 0, 0, .25);
+}
+
+
+/* =========================
+      RESULTADO
+      Afeta:
+      - <section class="resultado-box">
+      - <span class="etiqueta-topo">
+      - <div id="resultado"> (texto gerado)
+      ========================= */
+
+.resultado-box {
+    position: relative;
+    margin-top: 16px;
+    border: 2px solid #2f3b1d;
+    border-radius: 12px;
+    background: #fff;
+    padding: 18px;
+    min-height: 110px;
+}
+
+.etiqueta-topo {
+    position: absolute;
+    top: -12px;
+    left: 16px;
+    background: #fff;
+    padding: 0 10px;
+    font-weight: 900;
+    color: #1f2a12;
 }
 
 #resultado {
-    margin-top: 1rem;
-    font-weight: bold;
-    color: #444;
+    font-size: 16px;
+    line-height: 1.6;
 }
 
-select {
-    font-size: 18px;
-    padding: 6px 12px;
-    border-radius: 5px;
+
+/* ==========================================================================
+      RESPONSIVO (ambas páginas)
+      ========================================================================== */
+
+@media (max-width: 900px) {
+    /* HOME: sidebar menor */
+    .sidebar {
+        width: 210px;
+        min-width: 210px;
+    }
+}
+
+@media (max-width: 800px) {
+    /* HOME: layout vira coluna */
+    .layout {
+        flex-direction: column;
+    }
+    .sidebar {
+        position: relative;
+        top: 0;
+        width: 100%;
+        min-width: 0;
+        height: auto;
+    }
+    .conteudo {
+        width: 100%;
+        min-height: 200px;
+    }
+}
+
+@media (max-width: 700px) {
+    /* CÁLCULO: grids e botões empilham */
+    .grid-2 {
+        grid-template-columns: 1fr;
+    }
+    .badges {
+        grid-template-columns: 1fr;
+    }
+    .acoes {
+        flex-direction: column;
+    }
 }

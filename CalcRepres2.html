@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
+    <title>Calcula Representação</title>
+    <link rel="stylesheet" href="Style1.css">
+</head>
+
+<body>
+    <div class="container">
+
+        <header class="topo">
+            <h1>Calcula Representação</h1>
+            <p class="sub">Preencha os dados e gere o relatório.</p>
+        </header>
+
+        <!-- CARD 1: Identificação -->
+        <section class="card">
+            <h2 class="card-title">Identificação</h2>
+
+            <div class="grid-1">
+                <div class="campo">
+                    <label for="NomeComp">Nome completo</label>
+                    <input type="text" id="NomeComp" placeholder="Digite o nome completo">
+                </div>
+            </div>
+
+            <div class="grid-2">
+                <div class="campo">
+                    <label for="OM">Org Mil</label>
+                    <select id="OM">
+              <option value="31bimtz">31º BIMtz</option>
+            </select>
+                </div>
+
+                <div class="campo">
+                    <label for="posto">Posto/Graduação</label>
+                    <select id="posto" onchange="atualizarSoldo()">
+              <option value="">-- Selecione --</option>
+              <option value="soldado">Soldado</option>
+              <option value="cabo">Cabo</option>
+              <option value="3sargento">3º Sargento</option>
+              <option value="2sargento">2º Sargento</option>
+              <option value="1sargento">1º Sargento</option>
+              <option value="subtenente">Subtenente</option>
+              <option value="aspirante">Aspirante</option>
+              <option value="2tenente">2º Tenente</option>
+              <option value="1tenente">1º Tenente</option>
+              <option value="capitao">Capitão</option>
+              <option value="major">Major</option>
+              <option value="tenentecoronel">Tenente-Coronel</option>
+              <option value="coronel">Coronel</option>
+              <option value="generalbrigada">General de Brigada</option>
+              <option value="generaldivisao">General de Divisão</option>
+              <option value="generalexercito">General de Exército</option>
+            </select>
+                </div>
+            </div>
+        </section>
+
+        <!-- CARD 2: Referência (BI) -->
+        <section class="card">
+            <h2 class="card-title">Referência (BI)</h2>
+
+            <div class="grid-2">
+                <div class="campo">
+                    <label for="numeroBIIda">Número do BI Ida</label>
+                    <input type="text" id="numeroBIIda" inputmode="numeric" pattern="[0-9]*" placeholder="123" oninput="this.value=this.value.replace(/[^0-9]/g,'')">
+                </div>
+
+                <div class="campo">
+                    <label for="dataBIIda">Data do BI Ida</label>
+                    <input type="date" id="dataBIIda">
+                </div>
+            </div>
+            <div class="grid-2">
+                <div class="campo">
+                    <label for="numeroBIRet">Número do BI Retorno</label>
+                    <input type="text" id="numeroBIRet" inputmode="numeric" pattern="[0-9]*" placeholder="123" oninput="this.value=this.value.replace(/[^0-9]/g,'')">
+                </div>
+
+                <div class="campo">
+                    <label for="dataBIRet">Data do BI Retorno</label>
+                    <input type="date" id="dataBIRet">
+                </div>
+            </div>
+        </section>
+
+        <!-- CARD 3: Motivo e Período -->
+        <section class="card">
+            <h2 class="card-title">Motivo e Período</h2>
+
+            <div class="grid-1">
+                <div class="campo">
+                    <label for="Motivo">Motivo do recebimento</label>
+                    <select id="Motivo">
+              <option value="">-- Selecione --</option>
+              <option value="1">Viagem de representação</option>
+              <option value="2">Viagem de instrução</option>
+              <option value="3">Emprego operacional</option>
+              <option value="4">Ações militares de vigilância de fronteira</option>
+              <option value="5">Ações militares de Op GLO</option>
+              <option value="6">Ações subsidiárias</option>
+              <option value="7">Serviços de engenharia</option>
+              <option value="8">Serviços de cartografia</option>
+              <option value="9">Levantamento topográfico</option>
+              <option value="10">Escolta</option>
+              <option value="11">Perícia</option>
+              <option value="12">Produção de geoinformação</option>
+              <option value="13">Implantação e Mnt infraestrutura de tecnologia Com</option>
+              <option value="14">Avaliação de sistemas e Mat Emp Mil e de produtos de defesa</option>
+              <option value="15">Atv relacionadas à manutenção</option>
+            </select>
+                </div>
+            </div>
+
+            <div class="grid-2">
+                <div class="campo">
+                    <label for="dataInicio">Data e hora inicial</label>
+                    <input type="datetime-local" id="dataInicio">
+                </div>
+
+                <div class="campo">
+                    <label for="dataFim">Data e hora final</label>
+                    <input type="datetime-local" id="dataFim">
+                </div>
+            </div>
+        </section>
+
+        <!-- CARD 4: Valores -->
+        <section class="card">
+            <h2 class="card-title">Valores</h2>
+
+            <div class="badges">
+                <div class="badge">
+                    <span>Soldo</span>
+                    <strong>R$ <span id="soldo">0,00</span></strong>
+                </div>
+
+                <div class="badge">
+                    <span>2% do soldo</span>
+                    <strong>R$ <span id="percentual">0,00</span></strong>
+                </div>
+            </div>
+        </section>
+
+        <!-- Ações -->
+        <section class="acoes">
+            <button class="btn-calcular" type="button" onclick="calcular()">
+              Calcular
+            </button>
+
+            <button class="btn-pdf" type="button" onclick="exportarPDF()">
+              Exportar PDF
+            </button>
+        </section>
+
+        <!-- Resultado -->
+        <section class="resultado-box">
+            <span class="etiqueta-topo">Resultado</span>
+            <div id="resultado"></div>
+        </section>
+
+    </div>
+
+    <script src="scripts.js"></script>
+</body>
+
+</html>
