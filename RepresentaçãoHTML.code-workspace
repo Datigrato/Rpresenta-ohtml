@@ -1,0 +1,13 @@
+{
+    "folders": [
+		{
+			"path": "."
+		},
+		{
+			"path": "../Projeto Receituário"
+		}
+	],
+    "settings": {
+        "liveServer.settings.multiRootWorkspaceName": "RepresentaçãoHTML"
+    }
+}

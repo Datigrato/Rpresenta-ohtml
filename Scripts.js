@@ -64,6 +64,7 @@ function atualizarSoldo() {
 function calcular() {
     const posto = document.getElementById("posto").value;
     const nomeCompleto = document.getElementById("NomeComp").value.trim();
+    const identidade = document.getElementById("identidade").value.trim();
 
     // BI Ida
     const numeroBIIda = document.getElementById("numeroBIIda").value.trim();
@@ -95,6 +96,10 @@ function calcular() {
     // ===== Validações =====
     if (!nomeCompleto) {
         resultado.textContent = "Por favor, preencha o nome completo.";
+        return;
+    }
+    if (!identidade) {
+        resultado.textContent = "Por favor, preencha o campo identidade.";
         return;
     }
     if (!motivoValor) {
@@ -183,24 +188,14 @@ function calcular() {
     const percentualFormatado = percentual.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
 
     // ===== Texto para histórico/PDF =====
-    const textoResultado = [
-        `Nome completo: ${nomeCompleto}`,
-        `Pub BI (Ida): Nº ${biIdaNum} - ${new Date(dataBIIda + "T00:00:00").toLocaleDateString("pt-BR")}`,
-        `Posto: ${nomesPostosFormatados[posto] || posto}`,
-        `Pub BI (Ret): Nº ${biRetNum} - ${new Date(dataBIRet + "T00:00:00").toLocaleDateString("pt-BR")}`,
-        `OM: ${OM}`,
-        `Dias calculados: ${dias} dia(s) e ${horas} hora(s)${mensagemExtra}`,
-        `Motivo: ${motivoTexto}`,
-        `Dias usados no cálculo: ${diasUtilizados}${avisoLimite}`,
-        `Início: ${new Date(inicio).toLocaleString("pt-BR")}`,
-        `Valor diário: ${percentualFormatado}`,
-        `Fim: ${new Date(fim).toLocaleString("pt-BR")}`,
-        `Valor total: ${valorFormatado}`,
-    ];
+    const textoResultado = `
+    O ${nomesPostosFormatados[posto] || posto} ${nomeCompleto}, identidade nº ${identidade}, servindo no ${OM}, deslocou-se em ${new Date(inicio).toLocaleString("pt-BR")}, conforme publicado no BI nº ${biIdaNum}, de ${new Date(dataBIIda + "T00:00:00").toLocaleDateString("pt-BR")}. O retorno ocorreu em ${new Date(fim).toLocaleString("pt-BR")}, conforme publicado no BI nº ${biRetNum}, de ${new Date(dataBIRet + "T00:00:00").toLocaleDateString("pt-BR")}. O afastamento ocorreu pelo motivo: ${motivoTexto}, totalizando ${dias} dia(s) e ${horas} hora(s)${mensagemExtra}. Para fins de cálculo foram considerados ${diasUtilizados} dia(s)${avisoLimite}, com valor diário de ${percentualFormatado}, resultando no valor total de ${valorFormatado}.
+    `;
 
     // ===== Mostrar na tela =====
     resultado.innerHTML = `
     <p><strong>Nome completo:</strong> ${nomeCompleto}</p>
+    <p><strong>Identidade:</strong> ${identidade}</p>
     <p><strong>Posto:</strong> ${nomesPostosFormatados[posto] || posto}</p>
     <p><strong>OM:</strong> ${OM}</p>
     <p><strong>Motivo:</strong> ${motivoTexto}</p>
@@ -219,7 +214,7 @@ function calcular() {
     }
 }
 
-// Exporta os últimos 5 resultados para um PDF (2 colunas + separador tracejado)
+// Exporta os últimos 5 resultados para um PDF (separador tracejado)
 function exportarPDF() {
     const { jsPDF } = window.jspdf;
     const doc = new jsPDF();
@@ -233,74 +228,52 @@ function exportarPDF() {
 
     desenharCabecalho();
 
-    const marginX = 10;
-    const colGap = 10;
-    const pageW = doc.internal.pageSize.getWidth();
-
-    const colW = (pageW - marginX * 2 - colGap) / 2;
-    const xLeft = marginX;
-    const xRight = marginX + colW + colGap;
-
-    const topY = 20;
-    const bottomY = 270;
-    const lineH = 8;
-
-    let yLeft = topY;
-    let yRight = topY;
-
-    function novaPagina() {
-        doc.addPage();
-        desenharCabecalho();
-        yLeft = topY;
-        yRight = topY;
-    }
-
-    function writeInColumn(texto, x, yRefSetter, yRefGetter) {
-        const wrapped = doc.splitTextToSize(texto, colW);
-
-        if (yRefGetter() + wrapped.length * lineH > bottomY) {
-            novaPagina();
-        }
-
-        wrapped.forEach((l) => {
-            doc.text(l, x, yRefGetter());
-            yRefSetter(yRefGetter() + lineH);
-        });
-    }
-
     if (historicoResultados.length === 0) {
         doc.text("Nenhum cálculo realizado ainda.", 10, 30);
         doc.save("calculos_representacao.pdf");
         return;
     }
 
-    historicoResultados.forEach((resArray) => {
-        resArray.forEach((linha, idxLinha) => {
-            const vaiPraDireita = idxLinha % 2 === 1;
+    const margemX = 15;
+    const topY = 20;
+    const bottomY = 280;
+    const larguraTexto = 180; // largura útil na folha
+    const lineH = 6; // altura de linha
 
-            if (!vaiPraDireita) {
-                writeInColumn(linha, xLeft, (v) => (yLeft = v), () => yLeft);
-            } else {
-                writeInColumn(linha, xRight, (v) => (yRight = v), () => yRight);
-            }
-        });
+    let y = topY;
 
-        // Linha tracejada entre resultados (abaixo do maior Y das colunas)
-        let yLinha = Math.max(yLeft, yRight);
+    function novaPagina() {
+        doc.addPage();
+        desenharCabecalho();
+        y = topY;
+    }
 
-        if (yLinha + 10 > bottomY) {
-            novaPagina();
-            yLinha = topY;
+    function escreverBloco(texto) {
+        const textoFinal = String(texto).replace(/\n\s+/g, "\n").trim(); // limpa identação do template string
+        const linhas = doc.splitTextToSize(textoFinal, larguraTexto);
+
+        for (const linha of linhas) {
+            if (y > bottomY) novaPagina();
+            doc.text(linha, margemX, y);
+            y += lineH;
         }
+    }
 
-        doc.setLineWidth(0.3);
-        doc.setDrawColor(60);
-        doc.setLineDash([3, 2]);
-        doc.line(xLeft, yLinha, xRight + colW, yLinha);
-        doc.setLineDash([]);
+    historicoResultados.forEach((resTexto, idx) => {
+        escreverBloco(resTexto);
 
-        yLeft = yLinha + 8;
-        yRight = yLinha + 8;
+        // separador tracejado entre resultados (exceto no último)
+        if (idx < historicoResultados.length - 1) {
+            if (y + 10 > bottomY) novaPagina();
+
+            doc.setLineWidth(0.3);
+            doc.setDrawColor(60);
+            doc.setLineDash([3, 2]);
+            doc.line(margemX, y + 2, margemX + larguraTexto, y + 2);
+            doc.setLineDash([]);
+
+            y += 10;
+        }
     });
 
     doc.save("calculos_representacao.pdf");
@@ -308,4 +281,128 @@ function exportarPDF() {
 console.log("JS pronto, testando atualizarSoldo...");
 window.addEventListener("DOMContentLoaded", () => {
     atualizarSoldo();
+});
+/* =========================
+MÁSCARA IDENTIDADE
+Formato: 000000000-0
+========================= */
+
+const identidadeInput = document.getElementById("identidade");
+
+identidadeInput.addEventListener("input", function() {
+
+    // Remove tudo que não for número
+    let valor = this.value.replace(/\D/g, "");
+
+    // Limita a 10 números
+    valor = valor.substring(0, 10);
+
+    // Aplica hífen depois do 9º número
+    if (valor.length > 9) {
+        valor = valor.substring(0, 9) + "-" + valor.substring(9);
+    }
+
+    this.value = valor;
+});
+// ====== BLOQUEAR NÚMEROS NO NOME (robusto) ======
+document.addEventListener("DOMContentLoaded", () => {
+    const nomeInput = document.getElementById("NomeComp");
+    const erroNome = document.getElementById("erroNome"); // se não existir, tudo bem
+
+    if (!nomeInput) return;
+
+    const minusculas = new Set(["da", "de", "do", "dos", "das", "e"]);
+
+    // Permite letras (PT com acento), espaço, hífen e apóstrofo.
+    // (sem \p{L} para evitar SyntaxError em alguns ambientes)
+    function sanitizarNome(str) {
+        return str
+            .replace(/[0-9]/g, "") // remove números
+            .replace(/[^A-Za-zÀ-ÖØ-öø-ÿ\s'-]/g, "") // remove "símbolos estranhos"
+            .replace(/\s{2,}/g, " ") // reduz múltiplos espaços
+            .replace(/^\s+/g, ""); // remove só espaços do início (não do fim)
+    }
+
+    function capitalizarPalavra(palavra, idx) {
+        const lower = palavra.toLowerCase();
+
+        if (idx !== 0 && minusculas.has(lower)) return lower;
+
+        // trata hífen e apóstrofo: ana-maria / d'avila
+        return lower
+            .split("-")
+            .map(seg =>
+                seg
+                .split("'")
+                .map(p => (p ? p[0].toUpperCase() + p.slice(1) : ""))
+                .join("'")
+            )
+            .join("-");
+    }
+
+    function capitalizarNomePreservandoEspaco(str) {
+        const temEspacoNoFinal = /\s$/.test(str); // <- chave do "não deixa digitar espaço"
+
+        // NÃO usa trim() aqui (pra não matar o espaço final enquanto digita)
+        const partes = str.split(" ").filter(p => p.length > 0);
+
+        const cap = partes.map((p, i) => capitalizarPalavra(p, i)).join(" ");
+
+        return temEspacoNoFinal ? cap + " " : cap;
+    }
+
+    function validarNomeCompleto(str) {
+        const limpo = str.trim();
+        const parts = limpo.split(" ").filter(Boolean);
+
+        if (parts.length < 2) {
+            return { ok: false, msg: "Digite nome e sobrenome (mínimo 2 palavras)." };
+        }
+
+        const invalid = parts.some(p => p.replace(/['-]/g, "").length < 2);
+        if (invalid) {
+            return { ok: false, msg: "Cada parte do nome deve ter pelo menos 2 letras." };
+        }
+
+        return { ok: true, msg: "" };
+    }
+
+    function aplicarFeedback(val) {
+        if (!erroNome) return;
+
+        if (val.ok) {
+            nomeInput.classList.remove("invalido");
+            erroNome.style.display = "none";
+            erroNome.textContent = "";
+        } else {
+            nomeInput.classList.add("invalido");
+            erroNome.style.display = "block";
+            erroNome.textContent = val.msg;
+        }
+    }
+
+    // impede digitar números
+    nomeInput.addEventListener("keydown", (e) => {
+        if (
+            e.ctrlKey || e.metaKey || e.altKey || ["Backspace", "Delete", "Tab", "Enter", "ArrowLeft", "ArrowRight", "Home", "End"].includes(e.key)
+        ) return;
+
+        if (/^[0-9]$/.test(e.key)) e.preventDefault();
+    });
+
+    // limpa + capitaliza sem matar o espaço final
+    nomeInput.addEventListener("input", () => {
+        const antes = nomeInput.value;
+
+        const limpo = sanitizarNome(antes);
+        const cap = capitalizarNomePreservandoEspaco(limpo);
+
+        if (cap !== antes) nomeInput.value = cap;
+
+        aplicarFeedback(validarNomeCompleto(nomeInput.value));
+    });
+
+    nomeInput.addEventListener("blur", () => {
+        aplicarFeedback(validarNomeCompleto(nomeInput.value));
+    });
 });
