@@ -184,6 +184,9 @@ function calcular() {
 
     const valorTotal = percentual * diasUtilizados;
 
+    window.valorTotalCalculado = valorTotal;
+    window.diasCalculados = diasUtilizados;
+
     const valorFormatado = valorTotal.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
     const percentualFormatado = percentual.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
 

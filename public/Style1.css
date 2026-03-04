@@ -535,6 +535,12 @@ body {
     box-shadow: 0 3px 8px rgba(0, 0, 0, .25);
 }
 
+.btn-salvar {
+    background-color: #4d4211;
+    color: #fff;
+    box-shadow: 0 3px 8px rgba(0, 0, 0, .25);
+}
+
 
 /* =========================
       RESULTADO
